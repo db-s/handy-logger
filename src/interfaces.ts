@@ -1,6 +1,6 @@
 import { FileTransportOptions, ConsoleTransportOptions, HttpTransportOptions, StreamTransportOptions } from 'winston/lib/winston/transports';
 import { DailyRotateFileTransportOptions } from 'winston-daily-rotate-file';
-import { TransportTypes } from './enums';
+import { TransportTypes, LogLevels } from './enums';
 
 export interface ObjectGeneric {
   [key: string]: any;
@@ -22,11 +22,11 @@ export interface TransportOption {
 
 export interface EasyLoggerOptions {
   title?: string,
-  level?: string,
+  level?: LogLevels | string,
   levels?: ObjectGeneric,
   colorize?: boolean,
   transports: {
-    type: TransportTypes,
+    type: TransportTypes | string,
     fileOpts?: FileTransportOptions,
     consoleOpts?: ConsoleTransportOptions,
     httpOpts?: HttpTransportOptions,
@@ -35,4 +35,6 @@ export interface EasyLoggerOptions {
     rotationOpts?: DailyRotateFileTransportOptions,
   }[],
   overrideConfig?: boolean,
+  timeStampFormat?: string | (() => string),
+  logDataStringCustomFormat?: (timestamp:string, level:string, message:string) => string,
 }
