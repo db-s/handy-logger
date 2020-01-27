@@ -31,7 +31,6 @@ export interface EasyLoggerOptions {
     consoleOpts?: ConsoleTransportOptions,
     httpOpts?: HttpTransportOptions,
     streamOpts?: StreamTransportOptions,
-    rotation?: boolean,
     rotationOpts?: DailyRotateFileTransportOptions,
   }[],
   overrideConfig?: boolean,

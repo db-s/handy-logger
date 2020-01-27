@@ -34,7 +34,7 @@ export class EasyLogger {
           break;
 
         case TransportTypes.dailyRotateFile:
-          if (tp.rotation === true) {
+          if (tp.rotationOpts) {
             _transport = new (transports.DailyRotateFile)(tp.rotationOpts);
           }
           break;
