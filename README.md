@@ -4,10 +4,6 @@
 
 An easy log handler for Node.js application which is built on top of popular logger library `winston`.
 
-- Type some Markdown on the left
-- See HTML in the right
-- Magic
-
 ### Installation
 
 ```sh
@@ -42,11 +38,11 @@ const myLogger = new EasyLogger(opts);
 * __levels__ (object): Custom log levels. Read more [here](https://github.com/winstonjs/winston#using-custom-logging-levels).
 * __transports__ (array): List of log transports ie. `console`, `file` etc. Read more [here](https://github.com/winstonjs/winston#transports). Transport options are as follows -
   * _type_ (TransportTypes | string): Type of transport. Types are following -
-    `file` - For logging in files
-    `daily-rotate-file` - For logging in file with rotational logics
-    `console` - For logging in console
-    `http` - For logging via HTTP
-    `stream` - For logging via stream
+    * `file` - For logging in files
+    * `daily-rotate-file` - For logging in file with rotational logics
+    * `console` - For logging in console
+    * `http` - For logging via HTTP
+    * `stream` - For logging via stream
   * _fileOpts_ (FileTransportOptions): Winston file transport options
   * _consoleOpts_ (ConsoleTransportOptions): - Winston console transport options
   * _httpOpts_ (HttpTransportOptions): Winston http transport options
@@ -64,7 +60,7 @@ This can be used to set type of the logger when we are calling `getLogger()`. Th
 
 ```javascript
 const loggerObj: EasyLogger = new EasyLogger({
-  title: 'ARC Facilities',
+  title: 'My Awesome App',
   level: 'silly',
   colorize: true,
   transports: [
