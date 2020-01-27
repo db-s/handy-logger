@@ -62,7 +62,6 @@ This can be used to set type of the logger when we are calling `getLogger()`. Th
 const loggerObj: EasyLogger = new EasyLogger({
   title: 'My Awesome App',
   level: 'silly',
-  colorize: true,
   transports: [
     {
       type: 'console',
