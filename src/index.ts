@@ -12,4 +12,4 @@
 *       |_______________________________________________________________________________________________|
 */
 
-export { Logger } from './logger';
+export { EasyLogger, easyLogger, LoggerBase } from './logger';

@@ -1,33 +1,16 @@
-import { transports } from "winston";
+import { EasyLoggerOptions } from './interfaces';
+import { LogLevels, TransportTypes } from './enums';
 
-const config: any = {
-  levels: {
-    error: 0,
-    warn: 1,
-      info: 2,
-      verbose: 3,
-      debug: 4,
-      silly: 5
-  },
-  transportOptions: [
-    new transports.Console()
+export const defaultLoggerConfig: EasyLoggerOptions = {
+  title: 'Sample App',
+  level: LogLevels.silly,
+  colorize: true,
+  transports: [
+    {
+      type: TransportTypes.console,
+      consoleOpts: {},
+      rotation: false,
+    }
   ],
-  rotationalTransport: {
-    json: true,
-    filename: `../application-%DATE%.log`,
-    datePattern: 'MM-DD-YYYY',
-    zippedArchive: true,
-    maxSize: '20m',
-    maxFiles: '14d'
-  },
-  queryTransport: {
-      filename: '../application-%DATE%.log',
-      datePattern: 'MM-DD-YYYY',
-      prepend: true,
-      level: "error",
-      json: true,
-      timestamp: true
-  }
+  overrideConfig: true,
 };
-
-export default config;

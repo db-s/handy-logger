@@ -1,101 +1,113 @@
-import * as winston from 'winston';
-import * as winstonDailyRotateFile from 'winston-daily-rotate-file';
-import config from './config';
-import { createLogger, transports } from 'winston';
-import { format } from 'winston';
-import * as path from 'path';
-import * as shelljs from 'shelljs';
-import { TransformConfig, TransportOption } from './interfaces/transport.interface';
-// import { format } from 'logform';
+import { defaultLoggerConfig } from './config';
+import { createLogger, transports, Logger } from 'winston';
+import { EasyLoggerOptions } from './interfaces';
+import { TransportTypes } from './enums';
+import { format, Format } from 'logform';
+import * as TransportStream from 'winston-transport';
 
-const { combine, timestamp, label, printf, prettyPrint } = format;
-
-export class Logger {
-  public transFormConfig: any;
+export class EasyLogger {
+  private _config: EasyLoggerOptions;
+  private _transports: TransportStream | TransportStream[] | undefined = [];
+  private logger: Logger;
   
-  constructor(protected transformConfig: TransformConfig) {
-    this.setRotationalTransformObj(transformConfig);
+  constructor(protected opts?: EasyLoggerOptions) {
+    this._config = defaultLoggerConfig;
+    
+    if (opts?.overrideConfig === true) {
+      Object.assign(this._config, opts);
+    } else {
+      this._config = opts || defaultLoggerConfig;
+    }
+
+    this.configureTransport();
+    this.logger = this.createLoggerInstance();
   }
 
-  public getLevels() {
-    return config.levels;
-  }
+  private configureTransport(): void {
+    for (const tp of this._config.transports) {
+      let _transport: TransportStream | null = null;
 
-  private setRotationalTransformObj(transformConfig: any) {
-    this.transFormConfig = config.rotationalTransport;
-    if (transformConfig) {
-      // tslint:disable-next-line: forin
-      for (const property in transformConfig) {
-        this.transFormConfig[property] = transformConfig[property];
+      switch (tp.type) {
+        case TransportTypes.console:
+        default:
+          _transport = new transports.Console(tp.consoleOpts);
+          break;
+
+        case TransportTypes.dailyRotateFile:
+          if (tp.rotation === true) {
+            _transport = new (transports.DailyRotateFile)(tp.rotationOpts);
+          }
+          break;
+
+        case TransportTypes.file:
+          _transport = new transports.File(tp.fileOpts);
+          break;
+
+        case TransportTypes.http:
+          _transport = new transports.Http(tp.httpOpts);
+          break;
+
+        case TransportTypes.stream:
+          _transport = new transports.Stream(tp.streamOpts);
+          break;
+      }
+
+      if (_transport && Array.isArray(this._transports)) {
+        this._transports.push(_transport);
       }
     }
+
+    if (!this._transports || (Array.isArray(this._transports) && this._transports.length === 0)) {
+      throw new Error('Error in setting up logger transport');
+    }
   }
 
-  private configurePrettylog(transportOptions: TransportOption, alignedWithColorsAndTime: any) {
-    const { title, level, message } = transportOptions;
-    const logger = createLogger({
-      format: alignedWithColorsAndTime,
-      transports: config.transportOptions
-    });
-
-    logger.log(level, message);
+  private formatDateString(ts?: string): string {
+    try {
+      const dateNow: Date = ts
+      ? new Date(ts)
+      : new Date(Date.now());
+      return dateNow.toUTCString();
+    } catch (e) {
+      return new Date(Date.now()).toUTCString();
+    }
   }
 
-  private async createLogInstance(transportOptions: TransportOption) {
-    const transport = new (winston.transports.DailyRotateFile)(this.transFormConfig);
-    const { title } = transportOptions;
-    const alignedWithColorsAndTime = format.combine(
-      format.json(),
+  private formatLogDataString(level: string, message: string, ts: string): string {
+    return `${this.formatDateString(ts)} - ${level.toUpperCase()} - ${this._config.title} - ${message}`;
+  }
+
+  private createLoggerInstance(): Logger {
+    const alignedWithColorsAndTime: Format = format.combine(
+      // format.json(),
       format.colorize(),
       format.timestamp(),
-      format.align(),
-      format.printf(info => `${info.timestamp} ${title} ${info.level}: ${info.message}`)
+      // format.align(),
+      format.printf(info => this.formatLogDataString(info.level, info.message, info.timestamp))
     );
 
-    this.configurePrettylog(transportOptions, alignedWithColorsAndTime);
-    const logger = winston.createLogger({
+    const logger: Logger = createLogger({
+      level: this._config.level,
       format: alignedWithColorsAndTime,
-      transports: [transport]
+      exitOnError: false,
+      transports: this._transports,
     });
 
     return logger;
   }
 
-  private async createGenericLoggerInstance() {
-    const transport = new (winston.transports.DailyRotateFile)(config.queryTransport);
-    const logger = winston.createLogger({
-      transports: [transport]
-    });
-
-    return logger;
+  public getLoggerConfigs(): EasyLoggerOptions {
+    return this._config;
   }
 
-  public async log(logOptions: TransportOption) {
-    try {
-      const { level, message } = logOptions;
-      const logger = await this.createLogInstance(logOptions);
-      logger.log({
-        level,
-        message
-      });
-    } catch (e) {
-      console.error('Exception', e);
-      throw e;
-    }
+  public getLogger(): Logger {
+    return this.logger;
   }
 
-  public async removeAllTransports(logOptions: TransportOption) {
-    const logger = await this.createLogInstance(logOptions);
-    logger.clear();
-  }
-
-  public async queryLog(searchterm: string) {
-    try {
-      const rs = shelljs.grep(searchterm, path.resolve(__dirname, "../application-01-16-2020.log"))
-      return rs.stdout;
-    } catch (e) {
-      console.error('Exception', e);
-      throw e;
-    }
+  public clearLogger(): void {
+    this.logger.clear();
   }
 }
+
+export const easyLogger: EasyLogger = new EasyLogger();
+export type LoggerBase = Logger;
