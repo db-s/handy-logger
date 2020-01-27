@@ -9,7 +9,6 @@ export const defaultLoggerConfig: EasyLoggerOptions = {
     {
       type: TransportTypes.console,
       consoleOpts: {},
-      rotation: false,
     }
   ],
   overrideConfig: true,
