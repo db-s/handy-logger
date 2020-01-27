@@ -3,6 +3,6 @@ import { defaultLoggerConfig } from '../config';
 
 describe('Logger Test Cases', () => {
   test('logger level', () => {
-    expect(easyLogger.getLoggerConfigs()).toMatchObject(defaultLoggerConfig);
+    expect(easyLogger.getConfig()).toMatchObject(defaultLoggerConfig);
   });
 });
