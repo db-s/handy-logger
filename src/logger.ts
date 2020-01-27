@@ -64,26 +64,39 @@ export class EasyLogger {
 
   private formatDateString(ts?: string): string {
     try {
-      const dateNow: Date = ts
-      ? new Date(ts)
-      : new Date(Date.now());
-      return dateNow.toUTCString();
+      if (typeof this._config.timeStampFormat === 'function') {
+        return this._config.timeStampFormat();
+      } else {
+        const dateNow: Date = ts
+        ? new Date(ts)
+        : new Date(Date.now());
+        return dateNow.toUTCString();
+      }
     } catch (e) {
       return new Date(Date.now()).toUTCString();
     }
   }
 
-  private formatLogDataString(level: string, message: string, ts: string): string {
-    return `${this.formatDateString(ts)} - ${level.toUpperCase()} - ${this._config.title} - ${message}`;
+  private formatLogDataString(ts: string, level: string, message: string): string {
+    if (typeof this._config.logDataStringCustomFormat === 'function') {
+      return this._config.logDataStringCustomFormat(ts, level, message);
+    } else {
+      return `${ts} | ${this._config.title} | ${level.toUpperCase()} | ${message}`;
+    }
   }
 
   private createLoggerInstance(): Logger {
     const alignedWithColorsAndTime: Format = format.combine(
-      // format.json(),
-      format.colorize(),
-      format.timestamp(),
-      // format.align(),
-      format.printf(info => this.formatLogDataString(info.level, info.message, info.timestamp))
+      format.json(),
+      // TODO: color customization will be added later
+      // format.colorize({ message: this._config.colorize }),
+      format.timestamp({
+        format: (typeof this._config.timeStampFormat === 'string')
+          ? this._config.timeStampFormat
+          : this.formatDateString.bind(this),
+      }),
+      format.align(),
+      format.printf(info => this.formatLogDataString(info.timestamp, info.level, info.message)),
     );
 
     const logger: Logger = createLogger({
@@ -96,7 +109,7 @@ export class EasyLogger {
     return logger;
   }
 
-  public getLoggerConfigs(): EasyLoggerOptions {
+  public getConfig(): EasyLoggerOptions {
     return this._config;
   }
 
@@ -110,4 +123,4 @@ export class EasyLogger {
 }
 
 export const easyLogger: EasyLogger = new EasyLogger();
-export type LoggerBase = Logger;
+export type EasyLoggerBase = Logger;
