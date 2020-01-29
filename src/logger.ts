@@ -9,10 +9,10 @@ export class EasyLogger {
   private _config: EasyLoggerOptions;
   private _transports: TransportStream | TransportStream[] | undefined = [];
   private logger: Logger;
-  
+
   constructor(protected opts?: EasyLoggerOptions) {
     this._config = defaultLoggerConfig;
-    
+
     if (opts?.overrideConfig === true) {
       Object.assign(this._config, opts);
     } else {
@@ -35,7 +35,7 @@ export class EasyLogger {
 
         case TransportTypes.dailyRotateFile:
           if (tp.rotationOpts) {
-            _transport = new (transports.DailyRotateFile)(tp.rotationOpts);
+            _transport = new transports.DailyRotateFile(tp.rotationOpts);
           }
           break;
 
@@ -67,9 +67,8 @@ export class EasyLogger {
       if (typeof this._config.timeStampFormat === 'function') {
         return this._config.timeStampFormat();
       } else {
-        const dateNow: Date = ts
-        ? new Date(ts)
-        : new Date(Date.now());
+        const dateNow: Date = ts ? new Date(ts) : new Date(Date.now());
+
         return dateNow.toUTCString();
       }
     } catch (e) {
@@ -91,12 +90,13 @@ export class EasyLogger {
       // TODO: color customization will be added later
       // format.colorize({ message: this._config.colorize }),
       format.timestamp({
-        format: (typeof this._config.timeStampFormat === 'string')
-          ? this._config.timeStampFormat
-          : this.formatDateString.bind(this),
+        format:
+          typeof this._config.timeStampFormat === 'string'
+            ? this._config.timeStampFormat
+            : this.formatDateString.bind(this),
       }),
       format.align(),
-      format.printf(info => this.formatLogDataString(info.timestamp, info.level, info.message)),
+      format.printf((info) => this.formatLogDataString(info.timestamp, info.level, info.message)),
     );
 
     const logger: Logger = createLogger({
