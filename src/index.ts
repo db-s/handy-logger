@@ -1,1 +1,1 @@
-export { EasyLogger, easyLogger, EasyLoggerBase } from './logger';
+export { EasyLogger, EasyLoggerBase } from './logger';

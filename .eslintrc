@@ -7,7 +7,6 @@
       "eslint:recommended",
       "plugin:@typescript-eslint/eslint-recommended",
       "plugin:@typescript-eslint/recommended",
-      // "plugin:@typescript-eslint/recommended-requiring-type-checking"
       "prettier/@typescript-eslint",
       "plugin:prettier/recommended"
   ],
@@ -97,6 +96,7 @@
       ],
       "space-unary-ops": 2,
       "newline-after-var": 2,
-      "no-underscore-dangle": 0
+      "no-underscore-dangle": 0,
+      "no-prototype-builtins": 1
   }
 }

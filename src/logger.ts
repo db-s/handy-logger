@@ -1,10 +1,24 @@
 import { defaultLoggerConfig } from './config';
 import { createLogger, transports, Logger } from 'winston';
-import { EasyLoggerOptions } from './interfaces';
+import { EasyLoggerOptions, EasyLoggerTransportOptions } from './interfaces';
 import { TransportTypes } from './enums';
 import { format, Format } from 'logform';
 import * as TransportStream from 'winston-transport';
+import { DailyRotateFileTransportOptions } from 'winston-daily-rotate-file';
+import {
+  ConsoleTransportOptions,
+  FileTransportOptions,
+  HttpTransportOptions,
+  StreamTransportOptions,
+} from 'winston/lib/winston/transports';
 
+/**
+ * EasyLogger class is built on top of winston library which takes a set
+ * of configuration and creates a new instance of winston logger
+ *
+ * @export
+ * @class EasyLogger
+ */
 export class EasyLogger {
   private _config: EasyLoggerOptions;
   private _transports: TransportStream | TransportStream[] | undefined = [];
@@ -24,37 +38,37 @@ export class EasyLogger {
   }
 
   private configureTransport(): void {
-    for (const tp of this._config.transports) {
-      let _transport: TransportStream | null = null;
+    for (const [tpType, tpOpts] of Object.entries(this._config.transports)) {
+      tpOpts.map((item: EasyLoggerTransportOptions): void => {
+        let _transport: TransportStream | undefined;
 
-      switch (tp.type) {
-        case TransportTypes.console:
-        default:
-          _transport = new transports.Console(tp.consoleOpts);
-          break;
+        switch (tpType) {
+          case TransportTypes.console:
+          default:
+            _transport = new transports.Console(item as ConsoleTransportOptions);
+            break;
 
-        case TransportTypes.dailyRotateFile:
-          if (tp.rotationOpts) {
-            _transport = new transports.DailyRotateFile(tp.rotationOpts);
-          }
-          break;
+          case TransportTypes.dailyRotateFile:
+            _transport = new transports.DailyRotateFile(item as DailyRotateFileTransportOptions);
+            break;
 
-        case TransportTypes.file:
-          _transport = new transports.File(tp.fileOpts);
-          break;
+          case TransportTypes.file:
+            _transport = new transports.File(item as FileTransportOptions);
+            break;
 
-        case TransportTypes.http:
-          _transport = new transports.Http(tp.httpOpts);
-          break;
+          case TransportTypes.http:
+            _transport = new transports.Http(item as HttpTransportOptions);
+            break;
 
-        case TransportTypes.stream:
-          _transport = new transports.Stream(tp.streamOpts);
-          break;
-      }
+          case TransportTypes.stream:
+            _transport = new transports.Stream(item as StreamTransportOptions);
+            break;
+        }
 
-      if (_transport && Array.isArray(this._transports)) {
-        this._transports.push(_transport);
-      }
+        if (_transport && Array.isArray(this._transports)) {
+          this._transports.push(_transport);
+        }
+      });
     }
 
     if (!this._transports || (Array.isArray(this._transports) && this._transports.length === 0)) {
@@ -116,11 +130,6 @@ export class EasyLogger {
   public getLogger(): Logger {
     return this.logger;
   }
-
-  public clearLogger(): void {
-    this.logger.clear();
-  }
 }
 
-export const easyLogger: EasyLogger = new EasyLogger();
 export type EasyLoggerBase = Logger;
