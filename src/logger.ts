@@ -26,41 +26,46 @@ export class EasyLogger {
 
   constructor(protected opts?: EasyLoggerOptions) {
     this._config = defaultLoggerConfig;
+    Object.assign(this._config, opts);
 
-    if (opts?.overrideConfig === true) {
-      Object.assign(this._config, opts);
-    } else {
-      this._config = opts || defaultLoggerConfig;
-    }
-
+    this.validateConfig();
     this.configureTransport();
     this.logger = this.createLoggerInstance();
   }
 
+  private validateConfig(): void {
+    if (
+      !this._config?.transports ||
+      (Array.isArray(this._config?.transports) && this._config?.transports.length === 0)
+    ) {
+      throw new Error('Transport must be added if default config is not overridden.');
+    }
+  }
+
   private configureTransport(): void {
-    for (const [tpType, tpOpts] of Object.entries(this._config.transports)) {
+    for (const [tpType, tpOpts] of Object.entries(this._config.transports!)) {
       tpOpts.map((item: EasyLoggerTransportOptions): void => {
         let _transport: TransportStream | undefined;
 
         switch (tpType) {
-          case TransportTypes.console:
+          case TransportTypes.Console:
           default:
             _transport = new transports.Console(item as ConsoleTransportOptions);
             break;
 
-          case TransportTypes.dailyRotateFile:
+          case TransportTypes.Rotate:
             _transport = new transports.DailyRotateFile(item as DailyRotateFileTransportOptions);
             break;
 
-          case TransportTypes.file:
+          case TransportTypes.File:
             _transport = new transports.File(item as FileTransportOptions);
             break;
 
-          case TransportTypes.http:
+          case TransportTypes.Http:
             _transport = new transports.Http(item as HttpTransportOptions);
             break;
 
-          case TransportTypes.stream:
+          case TransportTypes.Stream:
             _transport = new transports.Stream(item as StreamTransportOptions);
             break;
         }
@@ -92,9 +97,15 @@ export class EasyLogger {
 
   private formatLogDataString(ts: string, level: string, message: string): string {
     if (typeof this._config.logDataStringCustomFormat === 'function') {
-      return this._config.logDataStringCustomFormat(ts, level, message);
+      return this._config.logDataStringCustomFormat(ts, level, this._config?.title || '', message);
     } else {
-      return `${ts} | ${this._config.title} | ${level.toUpperCase()} | ${message}`;
+      let msg = ts ? `${ts} | ` : '';
+
+      msg += this._config.title ? `${this._config.title} | ` : '';
+      msg += level ? `${level.toUpperCase()} | ` : '';
+      msg += message || '';
+
+      return msg;
     }
   }
 

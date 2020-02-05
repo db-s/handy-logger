@@ -5,14 +5,10 @@ import {
   StreamTransportOptions,
 } from 'winston/lib/winston/transports';
 import { DailyRotateFileTransportOptions } from 'winston-daily-rotate-file';
-import { TransportTypes, LogLevels } from './enums';
+import { LogLevels } from './enums';
 
 export interface ObjectGeneric {
   [key: string]: any;
-}
-
-export interface EasyLoggerTransportType {
-  type: TransportTypes | string;
 }
 
 export interface EasyLoggerTransportTypeFile {
@@ -53,10 +49,14 @@ export interface EasyLoggerOptions {
   title?: string;
   level?: LogLevels | string;
   levels?: ObjectGeneric;
-  transports: EasyLoggerTransport;
-  overrideConfig?: boolean;
+  transports?: EasyLoggerTransport;
   timeStampFormat?: string | (() => string);
-  logDataStringCustomFormat?: (timestamp: string, level: string, message: string) => string;
+  logDataStringCustomFormat?: (
+    timestamp: string,
+    level: string,
+    title: string,
+    message: string,
+  ) => string;
   // TODO: add colorize option
   // colorize?: boolean;
 }
