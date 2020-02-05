@@ -4,95 +4,117 @@
 
 An easy log handler for Node.js application which is built on top of popular logger library `winston`.
 
-### Installation
+## Installation
 
 ```sh
-$ npm i https://github.com/db-s/easy-logger
+npm i https://github.com/db-s/easy-logger
 ```
 
-### Get started:
+***
 
-__Import library__
+## Get started
+
+### Import library
 
 ```javascript
-import { easyLogger, EasyLogger, EasyLoggerBase } from 'easy-logger';
+import { EasyLogger, EasyLoggerBase } from 'easy-logger';
 ```
 
-`easyLogger`
-This is an instance of EasyLogger class with default configuration. You can directly use this instance if there isn't any need of customization. In other words, it's a shorthand of the following -
+### EasyLogger
+
+EasyLogger class creates a new logger instance with default or custom configuration.
+
+#### Create logger with default configuration
 
 ```javascript
 const easyLogger = new EasyLogger();
 ```
 
-`EasyLogger`
-This is the wrapper class that is used when you need to create a logger instance with custom configuration.
+#### or with custom configuration
 
-Create logger with your configuration
 ```javascript
 const myLogger = new EasyLogger(opts);
 ```
-`EasyLogger` config has following properties -
-* __title__ (string): Application title can be provided which will be prefixed in log messages.
-* __level__ (LogLevels | string): Log level. Read more [here](https://github.com/winstonjs/winston#logging-levels).
-* __levels__ (object): Custom log levels. Read more [here](https://github.com/winstonjs/winston#using-custom-logging-levels).
-* __transports__ (array): List of log transports ie. `console`, `file` etc. Read more [here](https://github.com/winstonjs/winston#transports). Transport options are as follows -
-  * _type_ (TransportTypes | string): Type of transport. Types are following -
-    * `file` - For logging in files
-    * `daily-rotate-file` - For logging in file with rotational logics
-    * `console` - For logging in console
-    * `http` - For logging via HTTP
-    * `stream` - For logging via stream
-  * _fileOpts_ (FileTransportOptions): Winston file transport options
-  * _consoleOpts_ (ConsoleTransportOptions): - Winston console transport options
-  * _httpOpts_ (HttpTransportOptions): Winston http transport options
-  * _streamOpts_ (StreamTransportOptions): Winston stream transport options
-  * _rotationOpts_ (DailyRotateFileTransportOptions): Winston daily rotate file transport options (only works if `type` is set to `daily-rotate-file`)
-* __overrideConfig__ (boolean): Flag to override default configuration. If set to `true`, it will override only the provided configuration in constructor, otherwiese the given config will be set replacing the default config.
-* __timeStampFormat__ (string | (() => string)): Custom timestamp format. It can be a string accepted by [fetcha](https://github.com/taylorhakes/fecha) module or a method that returns formatted date.
-* __logDataStringCustomFormat__ ((timestamp:string, level:string, message:string) => string): Custom log message format. You can pass a method with timestamp, level and message and return a formatted string.
 
-`EasyLoggerBase`
+`opts` config has following properties -
+
+| Option                    | Type                                                                           | Default           | Description                                                                                                                                                                                                                                                       |
+|---------------------------|--------------------------------------------------------------------------------|-------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| title                     | string                                                                         | `undefined`       | Application title can be provided which will be prefixed (or customized using `logDataStringCustomFormat` method) in log messages.                                                                                                                                |
+| level                     | LogLevels \| string                                                            | `silly`           | Log level depending which different kind of log will be written. Read more [here](https://github.com/winstonjs/winston#logging-levels).                                                                                                                           |
+| levels                    | object                                                                         | `undefined`       | Custom log levels. Read more [here](https://github.com/winstonjs/winston#using-custom-logging-levels).                                                                                                                                                            |
+| transports                | EasyLoggerTransport                                                            | `{console: [{}]}` | A transport is essentially a storage device for your logs. Like winston, easylogger accepts multiple transports such as `console`, `file` etc. Read more [here](https://github.com/winstonjs/winston#transports). |
+| timeStampFormat           | (string \| (() => string))                                                     | `undefined`       | Custom timestamp format. It can be a string accepted by [fetcha](https://github.com/taylorhakes/fecha) module or a method that returns formatted date.                                                                                                            |
+| logDataStringCustomFormat | ((timestamp: string, level: string, title: string, message: string) => string) | `undefined`       | Custom log message format. You can pass a method with timestamp, level, title and message and return a formatted string as you want.                                                                                                                              |
+Transport options (`EasyLoggerTransport`) are as follows -
+
+* __file__ `Array<FileTransportOptions>` - Winston file transport options for logging in files.
+* __rotate__ `Array<DailyRotateFileTransportOptions>` - Winston daily rotate file transport options for logging in file with rotational logics.
+* __console__ `Array<ConsoleTransportOptions>` - Winston console transport options for logging in console.
+* __http__ `Array<HttpTransportOptions>` - Winston http transport options for logging via HTTP.
+* __stream__ `Array<StreamTransportOptions>` - Winston stream transport options for logging via stream.
+
+### EasyLoggerBase
+
 This can be used to set type of the logger when we are calling `getLogger()`. The type actually refers to `winston.logger`, so you should be able to access all methods that `winston.logger` provides.
 
+***
 
-### How to use:
+## How to use
 
 ```javascript
+import { EasyLogger, EasyLoggerBase, LogLevels } from 'easy-logger';
+
 const loggerObj: EasyLogger = new EasyLogger({
   title: 'My Awesome App',
-  level: 'silly',
-  transports: [
-    {
-      type: 'console',
-      consoleOpts: {},
-    }
-  ],
-  overrideConfig: true,
+  level: LogLevels.Info,
+  transports: {
+    console: [
+      {
+        handleExceptions: false,
+      },
+    ],
+    file: [
+      {
+        filename: 'app-error.log',
+        level: LogLevels.Error,
+      },
+      {
+        filename: 'app-warning.log',
+        level: LogLevels.Warn,
+      },
+    ],
+  },
   timeStampFormat: () => {
     return new Date().toUTCString();
   },
-  logDataStringCustomFormat: (ts, lv, msg) => {
-    return `${lv} >>>> ${ts} >>>> ${msg}`;
+  logDataStringCustomFormat: (ts, lv, title, msg) => {
+    return `APP: ${title} :: ${ts} :: [${lv}] :: ${msg}`;
   },
 });
 const logger: EasyLoggerBase = loggerObj.getLogger();
 
-logger.info('foo bar');
-logger.warn('john doe is a good man');
+logger.info('sunny day');
+logger.warn('foo bar');
+logger.error('err message');
 ```
 
 This will log
+
 ```sh
-info >>>> Mon, 27 Jan 2020 12:52:00 GMT >>>> 	foo bar
-warn >>>> Mon, 27 Jan 2020 12:52:00 GMT >>>> 	john doe is a good man
+APP: My Awesome App :: Wed, 05 Feb 2020 15:38:08 GMT :: [info] :: 	sunny day
+APP: My Awesome App :: Wed, 05 Feb 2020 15:38:08 GMT :: [warn] :: 	foo bar
+APP: My Awesome App :: Wed, 05 Feb 2020 15:38:08 GMT :: [error] :: 	err message
 ```
 
-### Todos
+***
 
-- Add `colorize` option
+## Todos
 
-License
-----
+* Add `colorize` option
+
+***
+
+## License
 
 ISC
