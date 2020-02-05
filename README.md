@@ -46,6 +46,7 @@ const myLogger = new EasyLogger(opts);
 | transports                | EasyLoggerTransport                                                            | `{console: [{}]}` | A transport is essentially a storage device for your logs. Like winston, easylogger accepts multiple transports such as `console`, `file` etc. Read more [here](https://github.com/winstonjs/winston#transports). |
 | timeStampFormat           | (string \| (() => string))                                                     | `undefined`       | Custom timestamp format. It can be a string accepted by [fetcha](https://github.com/taylorhakes/fecha) module or a method that returns formatted date.                                                                                                            |
 | logDataStringCustomFormat | ((timestamp: string, level: string, title: string, message: string) => string) | `undefined`       | Custom log message format. You can pass a method with timestamp, level, title and message and return a formatted string as you want.                                                                                                                              |
+
 Transport options (`EasyLoggerTransport`) are as follows -
 
 * __file__ `Array<FileTransportOptions>` - Winston file transport options for logging in files.
