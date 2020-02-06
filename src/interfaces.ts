@@ -11,45 +11,45 @@ export interface ObjectGeneric {
   [key: string]: any;
 }
 
-export interface EasyLoggerTransportTypeFile {
+export interface HandyLoggerTransportTypeFile {
   file: FileTransportOptions[];
 }
 
-export interface EasyLoggerTransportTypeConsole {
+export interface HandyLoggerTransportTypeConsole {
   console: ConsoleTransportOptions[];
 }
 
-export interface EasyLoggerTransportTypeHTTP {
+export interface HandyLoggerTransportTypeHTTP {
   http: HttpTransportOptions[];
 }
 
-export interface EasyLoggerTransportTypeStream {
+export interface HandyLoggerTransportTypeStream {
   stream: StreamTransportOptions[];
 }
 
-export interface EasyLoggerTransportTypeRotate {
+export interface HandyLoggerTransportTypeRotate {
   rotate: DailyRotateFileTransportOptions[];
 }
 
-export type EasyLoggerTransport =
-  | EasyLoggerTransportTypeFile
-  | EasyLoggerTransportTypeConsole
-  | EasyLoggerTransportTypeHTTP
-  | EasyLoggerTransportTypeStream
-  | EasyLoggerTransportTypeRotate;
+export type HandyLoggerTransport =
+  | HandyLoggerTransportTypeFile
+  | HandyLoggerTransportTypeConsole
+  | HandyLoggerTransportTypeHTTP
+  | HandyLoggerTransportTypeStream
+  | HandyLoggerTransportTypeRotate;
 
-export type EasyLoggerTransportOptions =
+export type HandyLoggerTransportOptions =
   | FileTransportOptions
   | ConsoleTransportOptions
   | HttpTransportOptions
   | StreamTransportOptions
   | DailyRotateFileTransportOptions;
 
-export interface EasyLoggerOptions {
+export interface HandyLoggerOptions {
   title?: string;
   level?: LogLevels | string;
   levels?: ObjectGeneric;
-  transports?: EasyLoggerTransport;
+  transports?: HandyLoggerTransport;
   timeStampFormat?: string | (() => string);
   logDataStringCustomFormat?: (
     timestamp: string,

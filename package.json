@@ -1,7 +1,7 @@
 {
-  "name": "easy-logger",
+  "name": "handy-logger",
   "version": "1.0.0",
-  "description": "An easy log handler for Node.js",
+  "description": "An easy log handler for Node.js applications",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
@@ -16,7 +16,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/db-s/easy-logger.git"
+    "url": "git+https://github.com/db-s/handy-logger.git"
   },
   "keywords": [
     "log",
@@ -25,9 +25,9 @@
   "author": "db-s",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/db-s/easy-logger/issues"
+    "url": "https://github.com/db-s/handy-logger/issues"
   },
-  "homepage": "https://github.com/db-s/easy-logger#readme",
+  "homepage": "https://github.com/db-s/handy-logger#readme",
   "devDependencies": {
     "@types/jest": "^24.9.0",
     "@types/node": "^13.1.8",

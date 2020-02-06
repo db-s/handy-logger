@@ -1,7 +1,7 @@
-import { EasyLoggerOptions } from './interfaces';
+import { HandyLoggerOptions } from './interfaces';
 import { LogLevels } from './enums';
 
-export const defaultLoggerConfig: EasyLoggerOptions = {
+export const defaultLoggerConfig: HandyLoggerOptions = {
   level: LogLevels.Silly,
   transports: {
     console: [{}],

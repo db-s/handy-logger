@@ -1,6 +1,6 @@
 import { defaultLoggerConfig } from './config';
 import { createLogger, transports, Logger } from 'winston';
-import { EasyLoggerOptions, EasyLoggerTransportOptions } from './interfaces';
+import { HandyLoggerOptions, HandyLoggerTransportOptions } from './interfaces';
 import { TransportTypes } from './enums';
 import { format, Format } from 'logform';
 import * as TransportStream from 'winston-transport';
@@ -13,18 +13,18 @@ import {
 } from 'winston/lib/winston/transports';
 
 /**
- * EasyLogger class is built on top of winston library which takes a set
+ * HandyLogger class is built on top of winston library which takes a set
  * of configuration and creates a new instance of winston logger
  *
  * @export
- * @class EasyLogger
+ * @class HandyLogger
  */
-export class EasyLogger {
-  private _config: EasyLoggerOptions;
+export class HandyLogger {
+  private _config: HandyLoggerOptions;
   private _transports: TransportStream | TransportStream[] | undefined = [];
   private logger: Logger;
 
-  constructor(protected opts?: EasyLoggerOptions) {
+  constructor(protected opts?: HandyLoggerOptions) {
     this._config = defaultLoggerConfig;
     Object.assign(this._config, opts);
 
@@ -44,7 +44,7 @@ export class EasyLogger {
 
   private configureTransport(): void {
     for (const [tpType, tpOpts] of Object.entries(this._config.transports!)) {
-      tpOpts.map((item: EasyLoggerTransportOptions): void => {
+      tpOpts.map((item: HandyLoggerTransportOptions): void => {
         let _transport: TransportStream | undefined;
 
         switch (tpType) {
@@ -134,7 +134,7 @@ export class EasyLogger {
     return logger;
   }
 
-  public getConfig(): EasyLoggerOptions {
+  public getConfig(): HandyLoggerOptions {
     return this._config;
   }
 
@@ -143,4 +143,4 @@ export class EasyLogger {
   }
 }
 
-export type EasyLoggerBase = Logger;
+export type HandyLoggerBase = Logger;
