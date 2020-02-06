@@ -1,6 +1,6 @@
 {
   "name": "handy-logger",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "An easy log handler for Node.js applications",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -23,7 +23,7 @@
     "logger"
   ],
   "author": "db-s",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/db-s/handy-logger/issues"
   },

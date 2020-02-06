@@ -1,6 +1,10 @@
 # Handy Logger
 
+![Version](https://img.shields.io/npm/v/handy-logger)
 [![Build Status](https://travis-ci.org/db-s/handy-logger.svg?branch=master)](https://travis-ci.org/db-s/handy-logger)
+![License](https://img.shields.io/npm/l/handy-logger)
+![Minified Size](https://img.shields.io/bundlephobia/min/handy-logger)
+![Vulnerabilities](https://img.shields.io/snyk/vulnerabilities/npm/handy-logger)
 
 An easy log handler for Node.js application which is built on top of popular logger library `winston`.
 
