@@ -48,7 +48,6 @@ export type HandyLoggerTransportOptions =
 export interface HandyLoggerOptions {
   title?: string;
   level?: LogLevels | string;
-  levels?: ObjectGeneric;
   transports?: HandyLoggerTransport;
   timeStampFormat?: string | (() => string);
   logDataStringCustomFormat?: (
@@ -57,6 +56,9 @@ export interface HandyLoggerOptions {
     title: string,
     message: string,
   ) => string;
+  exitOnError?: boolean;
+  // TODO: add custom log levels
+  // levels?: winston.config.AbstractConfigSetLevels;
   // TODO: add colorize option
-  // colorize?: boolean;
+  // TODO: add syslog transport option
 }

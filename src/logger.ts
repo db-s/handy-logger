@@ -1,5 +1,5 @@
 import { defaultLoggerConfig } from './config';
-import { createLogger, transports, Logger } from 'winston';
+import { createLogger, transports, Logger, LoggerOptions } from 'winston';
 import { HandyLoggerOptions, HandyLoggerTransportOptions } from './interfaces';
 import { TransportTypes } from './enums';
 import { format, Format } from 'logform';
@@ -22,6 +22,7 @@ import {
 export class HandyLogger {
   private _config: HandyLoggerOptions;
   private _transports: TransportStream | TransportStream[] | undefined = [];
+  private winstonConfig: LoggerOptions = {};
   private logger: Logger;
 
   constructor(protected opts?: HandyLoggerOptions) {
@@ -30,6 +31,7 @@ export class HandyLogger {
 
     this.validateConfig();
     this.configureTransport();
+    this.setWinstonConfig();
     this.logger = this.createLoggerInstance();
   }
 
@@ -40,6 +42,34 @@ export class HandyLogger {
     ) {
       throw new Error('Transport must be added if default config is not overridden.');
     }
+  }
+
+  private setWinstonConfig(): void {
+    const alignedWithColorsAndTime: Format = format.combine(
+      format.json(),
+      // TODO: color customization will be added later
+      // format.colorize({ message: this._config.colorize }),
+      format.timestamp({
+        format:
+          typeof this._config.timeStampFormat === 'string'
+            ? this._config.timeStampFormat
+            : this.formatDateString.bind(this),
+      }),
+      format.align(),
+      format.printf((info) => this.formatLogDataString(info.timestamp, info.level, info.message)),
+    );
+
+    // TODO:
+    // ** add custom log `levels` with correct configuration and typing with a solution to custom
+    // log level typings
+    // https://github.com/winstonjs/winston/issues/1523
+
+    this.winstonConfig = {
+      level: this._config.level,
+      format: alignedWithColorsAndTime,
+      exitOnError: this._config.exitOnError,
+      transports: this._transports,
+    };
   }
 
   private configureTransport(): void {
@@ -110,26 +140,7 @@ export class HandyLogger {
   }
 
   private createLoggerInstance(): Logger {
-    const alignedWithColorsAndTime: Format = format.combine(
-      format.json(),
-      // TODO: color customization will be added later
-      // format.colorize({ message: this._config.colorize }),
-      format.timestamp({
-        format:
-          typeof this._config.timeStampFormat === 'string'
-            ? this._config.timeStampFormat
-            : this.formatDateString.bind(this),
-      }),
-      format.align(),
-      format.printf((info) => this.formatLogDataString(info.timestamp, info.level, info.message)),
-    );
-
-    const logger: Logger = createLogger({
-      level: this._config.level,
-      format: alignedWithColorsAndTime,
-      exitOnError: false,
-      transports: this._transports,
-    });
+    const logger: Logger = createLogger(this.winstonConfig);
 
     return logger;
   }

@@ -1,10 +1,9 @@
 # Handy Logger
 
-![Version](https://img.shields.io/npm/v/handy-logger)
+[![Version](https://img.shields.io/npm/v/handy-logger)](https://www.npmjs.com/package/handy-logger)
 [![Build Status](https://travis-ci.org/db-s/handy-logger.svg?branch=master)](https://travis-ci.org/db-s/handy-logger)
-![License](https://img.shields.io/npm/l/handy-logger)
-![Minified Size](https://img.shields.io/bundlephobia/min/handy-logger)
-![Vulnerabilities](https://img.shields.io/snyk/vulnerabilities/npm/handy-logger)
+[![License](https://img.shields.io/npm/l/handy-logger)](https://github.com/db-s/handy-logger#license)
+[![Known Vulnerabilities](https://snyk.io/test/npm/handy-logger/badge.svg)](https://snyk.io/test/npm/handy-logger)
 
 An easy log handler for Node.js application which is built on top of popular logger library `winston`.
 
@@ -46,7 +45,7 @@ const myLogger = new HandyLogger(opts);
 |---------------------------|--------------------------------------------------------------------------------|-------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | title                     | string                                                                         | `undefined`       | Application title can be provided which will be prefixed (or customized using `logDataStringCustomFormat` method) in log messages.                                                                                                                                |
 | level                     | LogLevels \| string                                                            | `silly`           | Log level depending which different kind of log will be written. Read more [here](https://github.com/winstonjs/winston#logging-levels).                                                                                                                           |
-| levels                    | object                                                                         | `undefined`       | Custom log levels. Read more [here](https://github.com/winstonjs/winston#using-custom-logging-levels).                                                                                                                                                            |
+| exitOnError               | boolean                                                                        | `true`            | If false, handled exceptions will not cause `process.exit`. Read more [here](https://github.com/winstonjs/winston#to-exit-or-not-to-exit).                                                                                                                                                             |
 | transports                | HandyLoggerTransport                                                            | `{console: [{}]}` | A transport is essentially a storage device for your logs. Like winston, handy-logger accepts multiple transports such as `console`, `file` etc. Read more [here](https://github.com/winstonjs/winston#transports). |
 | timeStampFormat           | (string \| (() => string))                                                     | `undefined`       | Custom timestamp format. It can be a string accepted by [fetcha](https://github.com/taylorhakes/fecha) module or a method that returns formatted date.                                                                                                            |
 | logDataStringCustomFormat | ((timestamp: string, level: string, title: string, message: string) => string) | `undefined`       | Custom log message format. You can pass a method with timestamp, level, title and message and return a formatted string as you want.                                                                                                                              |
@@ -116,10 +115,11 @@ APP: My Awesome App :: Wed, 05 Feb 2020 15:38:08 GMT :: [error] :: 	err message
 
 ## Todos
 
+* Add custom log levels
 * Add `colorize` option
 
 ***
 
 ## License
 
-ISC
+MIT
