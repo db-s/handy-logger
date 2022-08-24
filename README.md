@@ -2,6 +2,7 @@
 
 [![Version](https://img.shields.io/npm/v/handy-logger)](https://www.npmjs.com/package/handy-logger)
 [![Build Status](https://travis-ci.org/db-s/handy-logger.svg?branch=master)](https://travis-ci.org/db-s/handy-logger)
+[![Downloads](https://img.shields.io/npm/dt/handy-logger)](https://img.shields.io/npm/dt/handy-logger)
 [![License](https://img.shields.io/npm/l/handy-logger)](https://github.com/db-s/handy-logger#license)
 [![Known Vulnerabilities](https://snyk.io/test/npm/handy-logger/badge.svg)](https://snyk.io/test/npm/handy-logger)
 
