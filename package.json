@@ -48,7 +48,7 @@
   "dependencies": {
     "logform": "git+https://github.com/winstonjs/logform.git",
     "shelljs": "^0.8.5",
-    "winston": "^3.8.2",
+    "winston": "^3.10.0",
     "winston-daily-rotate-file": "^4.7.1",
     "winston-transport": "^4.5.0"
   },
